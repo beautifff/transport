@@ -1,8 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, MetaData
 from databases import Database
 
 app = FastAPI()
+
+# Настройка CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # URL фронтенда
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 DATABASE_URL = "postgresql+asyncpg://user:password@localhost/dbname"
 
@@ -29,6 +39,7 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
-@app.get("/")
-async def root():
-     return {"message": "Hello World"}
+# Тестовый эндпоинт
+@app.get("/api/test")
+async def test():
+    return {"message": "Backend is connected!"}
